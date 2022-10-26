@@ -1,6 +1,7 @@
 package order;
 
 import com.github.javafaker.Faker;
+import deleteuser.deleteUser;
 import dto.Order;
 import dto.User;
 import generatingOfClasses.GeneratingDataOfUser;
@@ -9,6 +10,7 @@ import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.junit.After;
 import org.junit.Test;
 import steps.OrderSteps;
 import steps.UserSteps;
@@ -21,10 +23,11 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.Matchers.*;
 
 @DisplayName("Создание/получение заказа/заказов")
-public class OrdersTest {
+public class OrdersTest extends deleteUser {
 
     private String accessToken;
     private OrderSteps orderSteps = new OrderSteps();
+    private UserSteps userSteps = new UserSteps();
     public static final String LOGIN_ERROR_UNAUTHORIZED_401 = "You should be authorised";
     public static final String BAD_REQUEST_UNAUTHORIZED_400 = "Ingredient ids must be provided";
 
@@ -185,5 +188,10 @@ public class OrdersTest {
         ValidatableResponse validatableResponse = orderSteps.createOrderWithoutAuth(order);
         validatableResponse.assertThat()
                 .statusCode(500);
+    }
+
+    @After
+    public void deleteData() {
+        deleteUser();
     }
 }

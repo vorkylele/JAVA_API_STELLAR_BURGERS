@@ -1,17 +1,19 @@
 package user;
 
+import deleteuser.deleteUser;
 import dto.User;
 import generatingOfClasses.GeneratingDataOfUser;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
+import org.junit.After;
 import org.junit.Test;
 import steps.UserSteps;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @DisplayName("Создание пользователя")
-public class RegisterOfUserTest {
+public class RegisterOfUserTest extends deleteUser {
 
     public static final String REGISTER_ERROR_EXISTS_403 = "User already exists";
     public static final String REGISTER_ERROR_REQUIRED_403 = "Email, password and name are required fields";
@@ -91,5 +93,10 @@ public class RegisterOfUserTest {
                 .and()
                 .assertThat().body("message", equalTo(REGISTER_ERROR_REQUIRED_403));
         Thread.sleep(2000);
+    }
+
+    @After
+    public void deleteData() {
+        deleteUser();
     }
 }

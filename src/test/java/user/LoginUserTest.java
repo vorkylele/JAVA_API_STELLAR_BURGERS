@@ -1,19 +1,20 @@
 package user;
 
 import com.github.javafaker.Faker;
-import dto.LoginUser;
+import deleteuser.deleteUser;
 import dto.User;
 import generatingOfClasses.GeneratingDataOfUser;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
+import org.junit.After;
 import org.junit.Test;
 import steps.UserSteps;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @DisplayName("Логин пользователя")
-public class LoginUserTest {
+public class LoginUserTest extends deleteUser {
 
     public static final String LOGIN_ERROR_UNAUTHORIZED_401 = "email or password are incorrect";
 
@@ -49,5 +50,10 @@ public class LoginUserTest {
                 .statusCode(401)
                 .and()
                 .assertThat().body("message", equalTo(LOGIN_ERROR_UNAUTHORIZED_401));
+    }
+
+    @After
+    public void deleteData() {
+        deleteUser();
     }
 }

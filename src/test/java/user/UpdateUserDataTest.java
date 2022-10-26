@@ -1,17 +1,19 @@
 package user;
 
+import deleteuser.deleteUser;
 import dto.User;
 import generatingOfClasses.GeneratingDataOfUser;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
+import org.junit.After;
 import org.junit.Test;
 import steps.UserSteps;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @DisplayName("Обновление данных пользователя")
-public class UpdateUserDataTest {
+public class UpdateUserDataTest extends deleteUser {
     private User updateDataUser;
     private String accessToken;
     public static final String AUTH_ERROR_401 = "You should be authorised";
@@ -37,7 +39,7 @@ public class UpdateUserDataTest {
                 .assertThat().body("success", equalTo(true));
 
         accessToken = UserSteps.getAccessToken(request);
-        updateDataUser = GeneratingDataOfUser.editEmailOfUser();
+        updateDataUser = User.editEmailOfUser();
         String expectedEmail = updateDataUser.getEmail();
         Response updateDataOfUser = UserSteps.updateDataOfUser(updateDataUser, accessToken);
 
@@ -68,7 +70,7 @@ public class UpdateUserDataTest {
                 .assertThat().body("success", equalTo(true));
 
         accessToken = UserSteps.getAccessToken(request);
-        updateDataUser = GeneratingDataOfUser.editNameOfUser();
+        updateDataUser = User.editNameOfUser();
         String expectedName = updateDataUser.getName();
         Response updateDataOfUser = UserSteps.updateDataOfUser(updateDataUser, accessToken);
 
@@ -99,7 +101,7 @@ public class UpdateUserDataTest {
                 .assertThat().body("success", equalTo(true));
 
         accessToken = UserSteps.getAccessToken(request);
-        updateDataUser = GeneratingDataOfUser.editPasswordOfUser();
+        updateDataUser = User.editPasswordOfUser();
         Response updateDataOfUser = UserSteps.updateDataOfUser(updateDataUser, accessToken);
 
         updateDataOfUser.then()
@@ -135,7 +137,7 @@ public class UpdateUserDataTest {
                 .and()
                 .assertThat().body("success", equalTo(true));
 
-        updateDataUser = GeneratingDataOfUser.editNameOfUser();
+        updateDataUser = User.editNameOfUser();
         Response updateDataOfUser = UserSteps.updateWithoutAuth(updateDataUser);
 
         updateDataOfUser.then()
@@ -144,4 +146,8 @@ public class UpdateUserDataTest {
                 .assertThat().body("message", equalTo(AUTH_ERROR_401));
     }
 
+    @After
+    public void deleteData() {
+        deleteUser();
+    }
 }

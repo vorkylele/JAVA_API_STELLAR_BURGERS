@@ -1,57 +1,42 @@
 package steps;
 
-import config.Config;
 import dto.Order;
 import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import io.restassured.specification.RequestSpecification;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class OrderSteps {
-    public RequestSpecification getBaseSpec() {
-        return new RequestSpecBuilder()
-                .setContentType(ContentType.JSON)
-                .addHeader("Content-Type", "application/json")
-                .setBaseUri(Config.BASE_URL)
-                .build();
-    }
+import static config.Config.INGREDIENTS;
+import static config.Config.ORDERS;
 
-    @Step("Получение заказов пользователя с авторизацией")
-    public ValidatableResponse getOrdersWithAuth(String accessToken) {
-        return (ValidatableResponse) RestAssured.given()
-                .spec(getBaseSpec())
-                .header("Authorization", accessToken)
-                .when()
-                .get("/orders")
-                .then()
-                .log().ifError();
-    }
+public class OrderSteps extends RestClient{
 
+    @DisplayName("Получение заказов пользователя без авторизации")
     @Step("Получение заказов пользователя без авторизации")
     public ValidatableResponse getOrdersWithoutAuth() {
         return (ValidatableResponse) RestAssured.given()
                 .spec(getBaseSpec())
                 .when()
-                .get("/orders")
+                .get(ORDERS)
                 .then()
                 .log().ifError();
     }
 
+    @DisplayName("Запрос списка ингредиентов")
     @Step("Запрос списка ингредиентов")
     public List<String> getIngredients() {
         return RestAssured.given()
                 .spec(getBaseSpec())
                 .when()
-                .get("/ingredients")
-                .then().log().ifError()
+                .get(INGREDIENTS)
+                .then()
+                .log().ifError()
                 .extract().path("data._id");
     }
 
+    @DisplayName("Создание заказа с авторизацией")
     @Step("Создание заказа с авторизацией")
     public ValidatableResponse createOrderWithAuth(Order order, String accessToken) {
         return RestAssured.given()
@@ -59,29 +44,31 @@ public class OrderSteps {
                 .header("Authorization", accessToken)
                 .body(order)
                 .when()
-                .post("/orders")
+                .post(ORDERS)
                 .then()
                 .log().ifError();
     }
 
+    @DisplayName("Получение заказа с авторизацией")
     @Step("Получение заказа с авторизацией")
     public ValidatableResponse getOrder(String accessToken) {
         return RestAssured.given()
                 .spec(getBaseSpec())
                 .header("Authorization", accessToken)
                 .when()
-                .get("/orders")
+                .get(ORDERS)
                 .then()
                 .log().ifError();
     }
 
+    @DisplayName("Создание заказа без авторизации")
     @Step("Создание заказа без авторизации")
     public ValidatableResponse createOrderWithoutAuth(Order order) {
         return RestAssured.given()
                 .spec(getBaseSpec())
                 .body(order)
                 .when()
-                .post("/orders")
+                .post(ORDERS)
                 .then()
                 .log().ifError();
     }

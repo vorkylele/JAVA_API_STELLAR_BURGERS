@@ -27,22 +27,4 @@ public class GeneratingDataOfUser {
         return new User(faker.internet().emailAddress(), faker.number().toString(),
                 null);
     }
-
-    @Step("Пользователь для смены почты")
-    public static User editEmailOfUser() {
-        return new User(faker.internet().emailAddress(), null,
-                null);
-    }
-
-    @Step("Пользователь для смены имени")
-    public static User editNameOfUser() {
-        return new User(null, null,
-                faker.name().firstName());
-    }
-
-    @Step("Пользователь для смены пароля")
-    public static User editPasswordOfUser() {
-        return new User(null, faker.number().toString(),
-                null);
-    }
 }
