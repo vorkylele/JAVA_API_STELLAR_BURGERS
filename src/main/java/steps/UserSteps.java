@@ -77,7 +77,7 @@ public class UserSteps extends RestClient{
                 .auth().oauth2(user.getAccessToken())
                 .body(user)
                 .when()
-                .delete("/auth/user/")
+                .delete(AUTH +USER)
                 .then()
                 .assertThat()
                 .statusCode(202)
