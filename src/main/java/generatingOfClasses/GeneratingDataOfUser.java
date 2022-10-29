@@ -2,7 +2,6 @@ package generatingOfClasses;
 
 import com.github.javafaker.Faker;
 import dto.User;
-import io.qameta.allure.Step;
 
 public class GeneratingDataOfUser {
     static Faker faker = new Faker();

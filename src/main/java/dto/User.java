@@ -2,17 +2,24 @@ package dto;
 
 import com.github.javafaker.Faker;
 import io.qameta.allure.Step;
-import lombok.AllArgsConstructor;
+import io.restassured.response.ValidatableResponse;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class User {
     private String email;
     private String password;
     private String name;
+    public String accessToken;
+
+    public User() {
+    }
+
+    public User(String email, String password, String name) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+    }
 
     @Step("Пользователь для смены почты")
     public static User editEmailOfUser() {
@@ -30,5 +37,10 @@ public class User {
     public static User editPasswordOfUser() {
         return new User(null, Faker.instance().internet().password(),
                 null);
+    }
+
+    public static String getAccessToken(ValidatableResponse validatableResponse) {
+        return validatableResponse.extract().path("accessToken").toString().substring(7);
+
     }
 }

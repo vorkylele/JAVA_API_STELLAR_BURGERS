@@ -1,16 +1,15 @@
 package order;
 
 import com.github.javafaker.Faker;
-import deleteuser.deleteUser;
 import dto.Order;
 import dto.User;
 import generatingOfClasses.GeneratingDataOfUser;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import steps.OrderSteps;
 import steps.UserSteps;
@@ -23,35 +22,41 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.Matchers.*;
 
 @DisplayName("Создание/получение заказа/заказов")
-public class OrdersTest extends deleteUser {
+public class OrdersTest {
 
+    User user;
     private String accessToken;
     private OrderSteps orderSteps = new OrderSteps();
     private UserSteps userSteps = new UserSteps();
+    ValidatableResponse response;
     public static final String LOGIN_ERROR_UNAUTHORIZED_401 = "You should be authorised";
     public static final String BAD_REQUEST_UNAUTHORIZED_400 = "Ingredient ids must be provided";
+
+    @Before
+    public void setUp() {
+        user = GeneratingDataOfUser.createNewUser();
+    }
 
     @Test
     @DisplayName("Получение заказов конкретного пользователя c авторизацией")
     @Description("Ожидаемый код ответа: 200")
     public void getOrdersWithAuth() throws InterruptedException {
-        User request = GeneratingDataOfUser.createNewUser();
-        Response response = UserSteps.createUser(request);
+        response = userSteps.createUser(user);
 
-        response.then()
+        response.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
         Thread.sleep(2000);
 
-        Response loginResponse = UserSteps.loginUser((new User(request.getEmail(), request.getPassword(), null)));
+        ValidatableResponse loginResponse = userSteps.loginUser((new User(user.getEmail(), user.getPassword(), null)));
 
-        loginResponse.then()
+        loginResponse.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
 
-        accessToken = UserSteps.getAccessToken(request);
+        accessToken = userSteps.getAccessToken(user);
         Order order = new Order(orderSteps.getIngredients());
         orderSteps.createOrderWithAuth(order, accessToken);
         ValidatableResponse validatableResponse = orderSteps.getOrder(accessToken);
@@ -68,23 +73,22 @@ public class OrdersTest extends deleteUser {
     @DisplayName("Получение заказов конкретного пользователя без авторизации")
     @Description("Ожидаемый код ответа: 401")
     public void getOrdersWithoutAuth() throws InterruptedException {
-        User request = GeneratingDataOfUser.createNewUser();
-        Response response = UserSteps.createUser(request);
+        response = userSteps.createUser(user);
 
-        response.then()
+        response.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
         Thread.sleep(2000);
 
-        Response loginResponse = UserSteps.loginUser((new User(request.getEmail(), request.getPassword(), null)));
+        ValidatableResponse loginResponse = userSteps.loginUser((new User(user.getEmail(), user.getPassword(), null)));
 
-        loginResponse.then()
+        loginResponse.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
 
-        accessToken = UserSteps.getAccessToken(request);
+        accessToken = userSteps.getAccessToken(user);
         Order order = new Order(orderSteps.getIngredients());
         orderSteps.createOrderWithAuth(order, accessToken);
         ValidatableResponse validatableResponse = orderSteps.getOrdersWithoutAuth();
@@ -99,23 +103,22 @@ public class OrdersTest extends deleteUser {
     @DisplayName("Создание заказа с авторизацией")
     @Description("Ожидаемый код ответа: 200")
     public void createOrderWithAuth() throws InterruptedException {
-        User request = GeneratingDataOfUser.createNewUser();
-        Response response = UserSteps.createUser(request);
+        response = userSteps.createUser(user);
 
-        response.then()
+        response.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
         Thread.sleep(2000);
 
-        Response loginResponse = UserSteps.loginUser((new User(request.getEmail(), request.getPassword(), null)));
+        ValidatableResponse loginResponse = userSteps.loginUser((new User(user.getEmail(), user.getPassword(), null)));
 
-        loginResponse.then()
+        loginResponse.assertThat()
                 .statusCode(200)
                 .and()
                 .assertThat().body("success", equalTo(true));
 
-        accessToken = UserSteps.getAccessToken(request);
+        accessToken = userSteps.getAccessToken(user);
         Order order = new Order(orderSteps.getIngredients());
         orderSteps.createOrderWithAuth(order, accessToken);
         ValidatableResponse validatableResponse = orderSteps.createOrderWithAuth(order, accessToken);
@@ -192,6 +195,10 @@ public class OrdersTest extends deleteUser {
 
     @After
     public void deleteData() {
-        deleteUser();
+        if (response != null) {
+            String token = User.getAccessToken(response);
+            user.setAccessToken(token);
+            userSteps.deleteUser(user);
+        }
     }
 }

@@ -1,42 +1,49 @@
 package user;
 
 import com.github.javafaker.Faker;
-import deleteuser.deleteUser;
 import dto.User;
 import generatingOfClasses.GeneratingDataOfUser;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import steps.UserSteps;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @DisplayName("Логин пользователя")
-public class LoginUserTest extends deleteUser {
+public class LoginUserTest {
 
+    User user;
+    private UserSteps userSteps = new UserSteps();
+    ValidatableResponse response;
     public static final String LOGIN_ERROR_UNAUTHORIZED_401 = "email or password are incorrect";
+
+    @Before
+    public void setUp() {
+        user = GeneratingDataOfUser.createNewUser();
+    }
 
     @Test
     @DisplayName("Авторизация пользователя")
     @Description("Ожидаемый код ответа: 200")
     public void loginUserWithAllValidParams() throws InterruptedException {
-        User request = GeneratingDataOfUser.createNewUser();
-        Response response = UserSteps.createUser(request);
+        response = userSteps.createUser(user);
 
-        response.then()
+        response.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
         Thread.sleep(2000);
 
-        Response loginResponse = UserSteps.loginUser((new User(request.getEmail(), request.getPassword(), null)));
+        ValidatableResponse loginResponse = userSteps.loginUser((new User(user.getEmail(), user.getPassword(), null)));
 
-        loginResponse.then()
+        loginResponse.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
     }
 
     @Test
@@ -44,9 +51,9 @@ public class LoginUserTest extends deleteUser {
     @Description("Ожидаемый код ответа: 401")
     public void loginNonExistentUser() {
         Faker faker = new Faker();
-        Response loginResponse = UserSteps.loginUser((new User(faker.internet().emailAddress(), faker.number().toString(), null)));
+        ValidatableResponse loginResponse = userSteps.loginUser((new User(faker.internet().emailAddress(), faker.number().toString(), null)));
 
-        loginResponse.then()
+        loginResponse.assertThat()
                 .statusCode(401)
                 .and()
                 .assertThat().body("message", equalTo(LOGIN_ERROR_UNAUTHORIZED_401));
@@ -54,6 +61,10 @@ public class LoginUserTest extends deleteUser {
 
     @After
     public void deleteData() {
-        deleteUser();
+        if (response != null) {
+            String token = User.getAccessToken(response);
+            user.setAccessToken(token);
+            userSteps.deleteUser(user);
+        }
     }
 }

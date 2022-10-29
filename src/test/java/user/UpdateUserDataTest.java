@@ -1,153 +1,162 @@
 package user;
 
-import deleteuser.deleteUser;
 import dto.User;
 import generatingOfClasses.GeneratingDataOfUser;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import steps.UserSteps;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @DisplayName("Обновление данных пользователя")
-public class UpdateUserDataTest extends deleteUser {
+public class UpdateUserDataTest {
+
+    User user;
+    private UserSteps userSteps = new UserSteps();
+    ValidatableResponse response;
     private User updateDataUser;
     private String accessToken;
     public static final String AUTH_ERROR_401 = "You should be authorised";
+
+    @Before
+    public void setUp() {
+        user = GeneratingDataOfUser.createNewUser();
+    }
 
     @Test
     @DisplayName("Изменение 'email' пользователя с авторизацией")
     @Description("Ожидаемый код ответа: 200")
     public void updateUserEmailWithAuth() throws InterruptedException {
-        User request = GeneratingDataOfUser.createNewUser();
-        Response response = UserSteps.createUser(request);
+        response = userSteps.createUser(user);
 
-        response.then()
+        response.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
         Thread.sleep(2000);
 
-        Response loginResponse = UserSteps.loginUser((new User(request.getEmail(), request.getPassword(), null)));
+        ValidatableResponse loginResponse = userSteps.loginUser((new User(user.getEmail(), user.getPassword(), null)));
 
-        loginResponse.then()
+        loginResponse.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
 
-        accessToken = UserSteps.getAccessToken(request);
+        accessToken = userSteps.getAccessToken(user);
         updateDataUser = User.editEmailOfUser();
         String expectedEmail = updateDataUser.getEmail();
-        Response updateDataOfUser = UserSteps.updateDataOfUser(updateDataUser, accessToken);
+        ValidatableResponse updateDataOfUser = userSteps.updateDataOfUser(updateDataUser, accessToken);
 
-        updateDataOfUser.then()
+        updateDataOfUser.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("user.email", equalTo(expectedEmail));
+                .body("user.email", equalTo(expectedEmail));
     }
 
     @Test
     @DisplayName("Изменение 'name' пользователя с авторизацией")
     @Description("Ожидаемый код ответа: 200")
     public void updateUserNameWithAuth() throws InterruptedException {
-        User request = GeneratingDataOfUser.createNewUser();
-        Response response = UserSteps.createUser(request);
+        response = userSteps.createUser(user);
 
-        response.then()
+        response.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
         Thread.sleep(2000);
 
-        Response loginResponse = UserSteps.loginUser((new User(request.getEmail(), request.getPassword(), null)));
+        ValidatableResponse loginResponse = userSteps.loginUser((new User(user.getEmail(), user.getPassword(), null)));
 
-        loginResponse.then()
+        loginResponse.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
 
-        accessToken = UserSteps.getAccessToken(request);
+        accessToken = userSteps.getAccessToken(user);
         updateDataUser = User.editNameOfUser();
         String expectedName = updateDataUser.getName();
-        Response updateDataOfUser = UserSteps.updateDataOfUser(updateDataUser, accessToken);
+        ValidatableResponse updateDataOfUser = userSteps.updateDataOfUser(updateDataUser, accessToken);
 
-        updateDataOfUser.then()
+        updateDataOfUser.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("user.name", equalTo(expectedName));
+                .body("user.name", equalTo(expectedName));
     }
 
     @Test
     @DisplayName("Изменение 'password' пользователя с авторизацией")
     @Description("Ожидаемый код ответа: 200")
     public void updateUserPasswordWithAuth() throws InterruptedException {
-        User request = GeneratingDataOfUser.createNewUser();
-        Response response = UserSteps.createUser(request);
+        response = userSteps.createUser(user);
 
-        response.then()
+        response.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
         Thread.sleep(2000);
 
-        Response loginResponse = UserSteps.loginUser((new User(request.getEmail(), request.getPassword(), null)));
+        ValidatableResponse loginResponse = userSteps.loginUser((new User(user.getEmail(), user.getPassword(), null)));
 
-        loginResponse.then()
+        loginResponse.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
 
-        accessToken = UserSteps.getAccessToken(request);
+        accessToken = userSteps.getAccessToken(user);
         updateDataUser = User.editPasswordOfUser();
-        Response updateDataOfUser = UserSteps.updateDataOfUser(updateDataUser, accessToken);
+        ValidatableResponse updateDataOfUser = userSteps.updateDataOfUser(updateDataUser, accessToken);
 
-        updateDataOfUser.then()
+        updateDataOfUser.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
 
-        request.setPassword(updateDataUser.getPassword());
+        user.setPassword(updateDataUser.getPassword());
 
-        loginResponse.then()
+        loginResponse.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
     }
 
     @Test
     @DisplayName("Изменение данных пользователя без авторизации")
     @Description("Ожидаемый код ответа: 401")
     public void updateUserDataWithoutAuth() throws InterruptedException {
-        User request = GeneratingDataOfUser.createNewUser();
-        Response response = UserSteps.createUser(request);
+        response = userSteps.createUser(user);
 
-        response.then()
+        response.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
         Thread.sleep(2000);
 
-        Response loginResponse = UserSteps.loginUser((new User(request.getEmail(), request.getPassword(), null)));
+        ValidatableResponse loginResponse = userSteps.loginUser((new User(user.getEmail(), user.getPassword(), null)));
 
-        loginResponse.then()
+        loginResponse.assertThat()
                 .statusCode(200)
                 .and()
-                .assertThat().body("success", equalTo(true));
+                .body("success", equalTo(true));
 
         updateDataUser = User.editNameOfUser();
-        Response updateDataOfUser = UserSteps.updateWithoutAuth(updateDataUser);
+        ValidatableResponse updateDataOfUser = userSteps.updateWithoutAuth(updateDataUser);
 
-        updateDataOfUser.then()
+        updateDataOfUser.assertThat()
                 .statusCode(401)
                 .and()
-                .assertThat().body("message", equalTo(AUTH_ERROR_401));
+                .body("message", equalTo(AUTH_ERROR_401));
     }
 
     @After
     public void deleteData() {
-        deleteUser();
+        if (response != null) {
+            String token = User.getAccessToken(response);
+            user.setAccessToken(token);
+            userSteps.deleteUser(user);
+        }
     }
 }
