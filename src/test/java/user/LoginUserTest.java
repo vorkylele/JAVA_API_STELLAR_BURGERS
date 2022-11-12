@@ -2,7 +2,7 @@ package user;
 
 import com.github.javafaker.Faker;
 import dto.User;
-import generatingOfClasses.GeneratingDataOfUser;
+import generatingdata.GeneratingDataOfUser;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;

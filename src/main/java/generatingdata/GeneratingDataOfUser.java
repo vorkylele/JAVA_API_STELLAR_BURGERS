@@ -1,4 +1,4 @@
-package generatingOfClasses;
+package generatingdata;
 
 import com.github.javafaker.Faker;
 import dto.User;
