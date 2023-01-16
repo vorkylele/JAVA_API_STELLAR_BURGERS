@@ -1,4 +1,4 @@
-package dto;
+package com.vorkylele.api.models;
 
 import io.qameta.allure.internal.shadowed.jackson.annotation.JsonIgnoreProperties;
 import io.qameta.allure.internal.shadowed.jackson.annotation.JsonProperty;

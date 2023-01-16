@@ -1,23 +1,23 @@
-package steps;
+package com.vorkylele.steps;
 
-import dto.Order;
+import com.vorkylele.api.models.Order;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
 
 import java.util.List;
 
-import static config.Config.INGREDIENTS;
-import static config.Config.ORDERS;
+import static com.vorkylele.config.EndPoints.*;
+import static com.vorkylele.specifications.Specifications.requestSpecification;
+import static io.restassured.RestAssured.given;
 
-public class OrderSteps extends RestClient{
+public class OrderSteps {
 
     @DisplayName("Получение заказов пользователя без авторизации")
     @Step("Получение заказов пользователя без авторизации")
-    public ValidatableResponse getOrdersWithoutAuth() {
-        return (ValidatableResponse) RestAssured.given()
-                .spec(getBaseSpec())
+    public static ValidatableResponse getOrdersWithoutAuth() {
+        return given()
+                .spec(requestSpecification())
                 .when()
                 .get(ORDERS)
                 .then()
@@ -26,9 +26,9 @@ public class OrderSteps extends RestClient{
 
     @DisplayName("Запрос списка ингредиентов")
     @Step("Запрос списка ингредиентов")
-    public List<String> getIngredients() {
-        return RestAssured.given()
-                .spec(getBaseSpec())
+    public static List<String> getIngredients() {
+        return given()
+                .spec(requestSpecification())
                 .when()
                 .get(INGREDIENTS)
                 .then()
@@ -38,9 +38,9 @@ public class OrderSteps extends RestClient{
 
     @DisplayName("Создание заказа с авторизацией")
     @Step("Создание заказа с авторизацией")
-    public ValidatableResponse createOrderWithAuth(Order order, String accessToken) {
-        return RestAssured.given()
-                .spec(getBaseSpec())
+    public static ValidatableResponse createOrderWithAuth(Order order, String accessToken) {
+        return given()
+                .spec(requestSpecification())
                 .header("Authorization", accessToken)
                 .body(order)
                 .when()
@@ -51,9 +51,9 @@ public class OrderSteps extends RestClient{
 
     @DisplayName("Получение заказа с авторизацией")
     @Step("Получение заказа с авторизацией")
-    public ValidatableResponse getOrder(String accessToken) {
-        return RestAssured.given()
-                .spec(getBaseSpec())
+    public static ValidatableResponse getOrder(String accessToken) {
+        return given()
+                .spec(requestSpecification())
                 .header("Authorization", accessToken)
                 .when()
                 .get(ORDERS)
@@ -63,9 +63,9 @@ public class OrderSteps extends RestClient{
 
     @DisplayName("Создание заказа без авторизации")
     @Step("Создание заказа без авторизации")
-    public ValidatableResponse createOrderWithoutAuth(Order order) {
-        return RestAssured.given()
-                .spec(getBaseSpec())
+    public static ValidatableResponse createOrderWithoutAuth(Order order) {
+        return given()
+                .spec(requestSpecification())
                 .body(order)
                 .when()
                 .post(ORDERS)

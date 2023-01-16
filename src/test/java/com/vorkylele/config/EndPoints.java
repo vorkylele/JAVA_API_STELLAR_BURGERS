@@ -1,7 +1,6 @@
-package config;
+package com.vorkylele.config;
 
-public class Config {
-    public static final String BASE_URL = "https://stellarburgers.nomoreparties.site/api";
+public class EndPoints {
     public static final String ORDERS = "/orders";
     public static final String INGREDIENTS = "/ingredients";
     public static final String AUTH = "/auth";
