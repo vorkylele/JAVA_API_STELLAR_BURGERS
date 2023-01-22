@@ -38,7 +38,6 @@ public class LoginUserTest extends BaseTest {
         loginResponse = UserSteps.loginUser((new User(user.getEmail(), user.getPassword(), null)));
         loginResponse
                 .statusCode(OK_STATUS)
-                .and()
                 .body(ASSERT_SUCCESS, equalTo(true));
     }
 
@@ -50,7 +49,6 @@ public class LoginUserTest extends BaseTest {
         loginResponse = UserSteps.loginUser((new User(Faker.instance().internet().emailAddress(), Faker.instance().number().toString(), null)));
         loginResponse.assertThat()
                 .statusCode(UNAUTHORIZED_STATUS)
-                .and()
                 .assertThat().body("message", equalTo(LOGIN_ERROR_UNAUTHORIZED_401));
     }
 }

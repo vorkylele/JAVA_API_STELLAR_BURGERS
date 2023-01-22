@@ -1,4 +1,4 @@
-### Проект по тестированию Stellar Burgers.
+### Проект по тестированию Stellar Burgers API.
 
 ---
 

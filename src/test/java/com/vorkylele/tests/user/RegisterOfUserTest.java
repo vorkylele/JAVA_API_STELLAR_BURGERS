@@ -17,7 +17,6 @@ import static com.vorkylele.helpers.MessageOfResponse.*;
 @DisplayName("Создание пользователя")
 @Epic("Создание пользователя")
 public class RegisterOfUserTest extends BaseTest {
-
     @Feature("Создание нового пользователя с валидными данными")
     @Test
     @DisplayName("Создание нового пользователя с валидными данными")
@@ -26,7 +25,6 @@ public class RegisterOfUserTest extends BaseTest {
         response = UserSteps.createUser(user);
         response
                 .statusCode(OK_STATUS)
-                .and()
                 .body(ASSERT_SUCCESS, equalTo(true));
     }
 
@@ -41,7 +39,6 @@ public class RegisterOfUserTest extends BaseTest {
         errorResponse = UserSteps.createUser(user);
         errorResponse
                 .statusCode(FORBIDDEN_STATUS)
-                .and()
                 .body(ASSERT_MESSAGE, equalTo(REGISTER_ERROR_EXISTS_403));
     }
 
@@ -55,7 +52,6 @@ public class RegisterOfUserTest extends BaseTest {
         response = UserSteps.createUser(userModified);
         response
                 .statusCode(FORBIDDEN_STATUS)
-                .and()
                 .body(ASSERT_MESSAGE, equalTo(REGISTER_ERROR_REQUIRED_403));
     }
 
@@ -69,7 +65,6 @@ public class RegisterOfUserTest extends BaseTest {
         response = UserSteps.createUser(userModified);
         response
                 .statusCode(FORBIDDEN_STATUS)
-                .and()
                 .body(ASSERT_MESSAGE, equalTo(REGISTER_ERROR_REQUIRED_403));
     }
 
@@ -83,7 +78,6 @@ public class RegisterOfUserTest extends BaseTest {
         response = UserSteps.createUser(userModified);
         response
                 .statusCode(FORBIDDEN_STATUS)
-                .and()
                 .body(ASSERT_MESSAGE, equalTo(REGISTER_ERROR_REQUIRED_403));
     }
 }

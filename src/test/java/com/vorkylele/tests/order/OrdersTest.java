@@ -53,7 +53,6 @@ public class OrdersTest extends BaseTest {
 
         order = new Order(OrderSteps.getIngredients());
         OrderSteps.createOrderWithAuth(order, accessToken);
-
         validatableResponse = OrderSteps.getOrder(accessToken);
         validatableResponse
                 .statusCode(OK_STATUS)
@@ -108,7 +107,6 @@ public class OrdersTest extends BaseTest {
         validatableResponse = OrderSteps.createOrderWithoutAuth(order);
         validatableResponse
                 .statusCode(OK_STATUS)
-                .and()
                 .body("success", equalTo(true))
                 .body("name", endsWith("бургер"))
                 .body("order.number", isA(Integer.class));
@@ -142,7 +140,6 @@ public class OrdersTest extends BaseTest {
         validatableResponse = OrderSteps.createOrderWithoutAuth(order);
         validatableResponse
                 .statusCode(BAD_REQUEST_STATUS)
-                .and()
                 .body("success", equalTo(false))
                 .body("message", equalTo(BAD_REQUEST_UNAUTHORIZED_400));
     }

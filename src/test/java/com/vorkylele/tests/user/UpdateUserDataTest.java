@@ -47,7 +47,6 @@ public class UpdateUserDataTest extends BaseTest {
         updateDataOfUser = UserSteps.updateDataOfUser(updateDataUser, accessToken);
         updateDataOfUser
                 .statusCode(OK_STATUS)
-                .and()
                 .body(ASSERT_USER_EMAIL, equalTo(expectedEmail));
     }
 
@@ -63,7 +62,6 @@ public class UpdateUserDataTest extends BaseTest {
         updateDataOfUser = UserSteps.updateDataOfUser(updateDataUser, accessToken);
         updateDataOfUser
                 .statusCode(OK_STATUS)
-                .and()
                 .body(ASSERT_USER_NAME, equalTo(expectedName));
     }
 
@@ -78,7 +76,6 @@ public class UpdateUserDataTest extends BaseTest {
         updateDataOfUser = UserSteps.updateDataOfUser(updateDataUser, accessToken);
         updateDataOfUser
                 .statusCode(OK_STATUS)
-                .and()
                 .body(ASSERT_SUCCESS, equalTo(true));
         Thread.sleep(2000);
 
@@ -86,7 +83,6 @@ public class UpdateUserDataTest extends BaseTest {
 
         loginResponse.assertThat()
                 .statusCode(OK_STATUS)
-                .and()
                 .body(ASSERT_SUCCESS, equalTo(true));
     }
 
@@ -100,7 +96,6 @@ public class UpdateUserDataTest extends BaseTest {
         updateDataOfUser = UserSteps.updateWithoutAuth(updateDataUser);
         updateDataOfUser.assertThat()
                 .statusCode(UNAUTHORIZED_STATUS)
-                .and()
                 .body(ASSERT_MESSAGE, equalTo(AUTH_ERROR_401));
     }
 }
